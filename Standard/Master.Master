@@ -1,0 +1,300 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Master.master.cs" Inherits="Standard.Master" %>
+
+<!DOCTYPE html>
+<%--<meta http-equiv="X-UA-Compatible" content="IE=8" />--%>
+<html>
+<head runat="server">
+
+
+    <title>Standard- Sumi Vietnam</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="~/Assets/Admin/css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap theme -->
+    <link href="~/Assets/Admin/css/bootstrap-theme.css" rel="stylesheet">
+    <!--external css-->
+    <!-- font icon -->
+    <link href="~/Assets/Admin/css/elegant-icons-style.css" rel="stylesheet" />
+    <link href="~/Assets/Admin/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom styles -->
+    <link href="~/Assets/Admin/css/style.css" rel="stylesheet">
+    <link href="~/Assets/Admin/css/style-responsive.css" rel="stylesheet" />
+    
+
+    
+    
+    <style type="text/css">
+        .auto-style1 {
+            position: relative;
+            left: 0px;
+            top:15px;
+        }
+        background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+
+    </style>
+    
+    
+    
+</head>
+ 
+
+
+<body>
+    <form id="form1" runat="server">
+        
+        <section id="container">
+            <div class="header dark-bg">
+    <div class="toggle-nav">
+        <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
+    </div>
+
+    <!--logo start-->
+    <a href="#" class="logo">STANDARD <span class="lite">MANAGEMENT</span></a>
+    <!--logo end-->
+
+    <%--<div class="nav search-row" id="top_menu">
+        <!--  search form start -->
+        <ul class="nav top-menu">
+            <li>
+                <form class="navbar-form">
+                    <input class="form-control" placeholder="Search" type="text">
+                </form>
+            </li>
+        </ul>
+        <!--  search form end -->
+    </div>--%>
+
+    
+
+    <div class="top-nav notification-row" id="dropdown_user">
+        <!-- notificatoin dropdown start-->
+        <ul class="nav pull-right top-menu">
+             <li id="language" class="auto-style1">
+                        <asp:Image ID="iben" runat="server" ImageUrl="~/Images/1396342291_United Kingdom(Great Britain).png"
+                            title="English" onclick='setCookie("lang","en",365)' />
+                        <asp:Image ID="ibvi" runat="server" ImageUrl="~/Images/1396342371_Vietnam-Flag.png" title="Vietnamese" onclick='setCookie("lang","vi",365)' />
+                    </li>
+
+            
+            
+            
+            <!-- user login dropdown end -->
+        
+        <!-- notificatoin dropdown end-->
+        <li  class="dropdown" >
+                <a data-toggle="dropdown" class="dropbtn" href="#" >
+                    <span class="profile-ava">
+                      
+                            <img alt="" src="../Assets/Admin/img/male.jpg">
+                    </span>
+                    <span class="username">
+                       <%Response.Write(Session["username"].ToString() !=""?Session["username"].ToString(): "" ); %>
+
+                    </span>
+                    <b class="caret"></b>
+                </a>
+                <div  class="dropdown-content">
+
+                   
+                        <a href="../ChangePass.aspx"><i class="icon_profile"></i> 
+                            <%Response.Write( Standard.Language.value=="vi"?"Đổi mật khẩu" : "Change password"  ); %>
+                        </a>
+                    
+                        <a href="../Login.aspx"><i class="icon_key_alt"></i> Log Out</a>
+
+                </div>
+            </li>
+            </ul>
+    </div>
+</div>
+            <aside>
+                <div id="sidebar" class="nav-collapse " >
+    <!-- sidebar menu start-->
+    <ul class="sidebar-menu">
+        <%--<li class="">
+            <a href="Home.aspx">
+                <span>Home</span>
+            </a>
+         
+        </li>--%>
+        <li class="sub-menu">
+            <a href="javascript:;"  class="parent_menu">
+                <i class="icon_document_alt"></i>
+                <span style="font-weight:bold;">
+                   
+                    <%Response.Write(Standard.Language.value == "vi" ? "Tiêu chuẩn SVWS": "SVWS Standard" ); %>
+                </span>
+                <span class="menu-arrow arrow_carrot-right"></span>
+            </a>
+            
+            <ul class="sub">
+                <li style="padding-left:5px;"><a href="../SVWSDocument/SVWSDocument.aspx" class="" ><%Response.Write(Standard.Language.value == "vi" ? "Tiêu chuẩn chung": "Public Standard"  ); %></a></li>
+                <li style="padding-left:5px;"><a href="../SVWSDocPrivate/SVWSDocPrivate.aspx" class="" ><%Response.Write(Standard.Language.value == "vi" ? "Tiêu chuẩn riêng biệt": "Private Standard" ); %></a></li>
+               
+            </ul>
+        </li>
+
+        <li class="sub-menu">
+            <a href="javascript:;" class="parent_menu">
+                <i class="icon_document_alt"></i>
+                <span style="font-weight:bold;">
+                    <%Response.Write(Standard.Language.value == "vi" ? "Tiêu chuẩn SWS" : "SWS Standard" ); %>
+                </span>
+                <span class="menu-arrow arrow_carrot-right"></span>
+            </a>
+             <ul class="sub">
+                <li style="padding-left:5px;"><a href="../SWSDocument/SWS_ViewProgress.aspx" class="" ><%Response.Write(Standard.Language.value == "vi" ? "Tiến độ triển khai": "View Progress"  ); %></a></li>
+                <li style="padding-left:5px;"><a href="../SWSDocument/SWSDocument.aspx" class="" ><%Response.Write(Standard.Language.value == "vi" ? "Quản lý tiêu chuẩn": "Manage Document" ); %></a></li>
+               
+            </ul>
+            
+        </li>
+        <li class="sub-menu">
+            <a href="javascript:;" class="parent_menu">
+                <i class="icon_desktop"></i>
+                <span style="font-weight:bold;">
+                    <%Response.Write(Standard.Language.value == "vi" ? "Quản lý":"Administrator menu" ); %>
+                </span>
+                <span class="menu-arrow arrow_carrot-right"></span>
+            </a>
+            <ul class="sub">
+                <li><a class="" href="../Administrator/Admin_typeofdoc.aspx"><%Response.Write(Standard.Language.value == "vi" ?"Loại tài liệu": "Type of Standard" ); %></a></li>
+                <li><a class="" href="../Administrator/Admin_SectionPic.aspx"><%Response.Write(Standard.Language.value == "vi" ? "Bộ phận- Người phụ trách" : "Section-Pic" ); %></a></li>
+                <li><a class="" href="../Administrator/Admin_User.aspx"><%Response.Write(Standard.Language.value == "vi" ? "Người dùng" : "Users"); %></a></li>
+            </ul>
+        </li>
+
+    </ul>
+    <!-- sidebar menu end-->
+                </div>
+
+            </aside>
+            <section id="main-content">
+                <section class="wrapper" >
+                
+                <!-- page start-->
+                    <%--<div>--%>
+                        
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                            
+                    <%--</div>--%>
+               
+                <!-- page end-->
+            </section>
+
+                
+            </section>
+            
+        </section>
+        
+
+        
+    </form>
+</body>
+
+     <script type="text/javascript">
+
+         //$(document).ready(function () {
+         //    $('#dropdown_user').on('click', 'a', function () {
+         //        $('li.dropdown_username').removeClass('open');
+         //        $(this).closest('li.dropdown_username').addClass('open');
+
+         //    })
+         //});
+     
+             function dropdown_logout() {
+
+                 alert('click event occured');
+              }
+
+
+        // get set language
+        function activeMenu(MenuID) {
+            if (document.getElementById) {
+                var menu = document.getElementById(MenuID)
+                menu.className = 'active';
+            }
+        }
+        function setCookie(cname, value, exdays) {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + exdays);
+                var cvalue = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+            document.cookie = cname + "=" + cvalue;
+              window.location.href = window.location.href.replace(/#.*$/, '');
+        //    location.reload(false);
+         //   window.history.forward(1);
+            
+            //window.location.reload();
+        }
+
+        function getCookie(cname) {
+            var i, x, y, ARRcookies = document.cookie.split(";");
+            for (i = 0; i < ARRcookies.length; i++) {
+                x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+                y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+                x = x.replace(/^\s+|\s+$/g, "");
+                if (x == cname) {
+                    return unescape(y);
+                }
+            }
+         }
+
+    </script>
+
+
+
+     
+  
+
+  <%--  <script src="../Assets/Admin/js/jquery.js" type="text/javascript"></script>
+    <script src="../Assets/Admin/js/bootstrap.min.js" type="text/javascript"></script>--%>
+
+    <%--<script src="Scripts/jquery.unobtrusive-ajax.min.js"></script>--%>
+    <!-- nice scroll -->
+   
+
+
+    <script src="../Assets/Admin/js/jquery.scrollTo.min.js" type="text/javascript"></script>
+    <script src="../Assets/Admin/js/jquery.nicescroll.js" type="text/javascript"></script><!--custome script for all page-->
+    <script src="../Assets/Admin/js/scripts.js" type="text/javascript"></script>
+
+</html>
