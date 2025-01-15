@@ -101,7 +101,7 @@
                 <tr >
                     <td>
                         <%Response.Write(Standard.Language.value == "en" ? "Section apply(*)" : "Bộ phận áp dụng(*)"); %>
-                        <asp:LinkButton ID="btnSendMailSignUp" runat="server" OnClick="btnSendMailSignUp_Click" OnClientClick="return confirm('Hệ thống sẽ gửi mail thông báo đến bộ phận liên quan, bạn có muốn tiếp tục?')">
+                        <asp:LinkButton ID="btnSendMailSignUp" runat="server" OnClick="btnSendMailSignUp_Click" OnClientClick="return sendMails()">
                             <span class="glyphicon glyphicon-envelope"></span>
                         </asp:LinkButton>
                     </td>
@@ -191,8 +191,23 @@
                     <td>
                         <asp:Label ID="lblSignUpMessage" runat="server"></asp:Label>
                         <asp:LinkButton ID="LinkButton2" runat="server" 
-                            OnClick="btn_confirm_issue_Click" 
-                            OnClientClick="return hasReadFiles()">OK</asp:LinkButton>
+                            OnClick="btn_accept_issue_Click" 
+                            OnClientClick="return hasReadFiles()" CssClass="mx-3">
+                            <%Response.Write(Standard.Language.value == "en" ? "Accept" : "Đồng ý");%>
+                        </asp:LinkButton>
+                        <asp:LinkButton ID="LinkButton3" runat="server" 
+                            OnClick="btn_decline_issue_Click" 
+                            OnClientClick="return hasReadFiles()" CssClass="mx-3">
+                            <%Response.Write(Standard.Language.value == "en" ? "Decline" : "Từ chối");%>
+                        </asp:LinkButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <%Response.Write(Standard.Language.value == "en" ? "Note" : "Ghi chú");%>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="400px"></asp:TextBox>
                     </td>
                 </tr>
                 </asp:PlaceHolder>
@@ -211,6 +226,18 @@
                const hasClickedOnFile = localStorage.getItem('confirmRead'+docID);
                if (hasClickedOnFile != 1) alert('Vui lòng đọc file tiêu chuẩn trước khi xác nhận.')
                return hasClickedOnFile == 1
+           }
+           function sendMails() {
+               const docID = (new URLSearchParams(window.location.search)).get('doc_id')
+               const hasSentMails = localStorage.getItem('sentMails' + docID);
+               let userConfirm
+               if (!hasSentMails) {
+                   userConfirm = confirm('Hệ thống sẽ gửi mail thông báo đến bộ phận liên quan, bạn có muốn tiếp tục?');
+                   if (userConfirm) localStorage.setItem('sentMails' + docID, '1');
+               } else {
+                   userConfirm = confirm('Hệ thống đã gửi mail thông báo, bạn có muốn gửi lại?');
+               }
+               return userConfirm;
            }
        </script>
     </div>

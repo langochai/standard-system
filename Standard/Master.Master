@@ -19,7 +19,7 @@
     <!-- Custom styles -->
     <link href="~/Assets/Admin/css/style.css" rel="stylesheet">
     <link href="~/Assets/Admin/css/style-responsive.css" rel="stylesheet" />
-    
+    <script src="/Assets/jquery.js"></script>
 
     
     
@@ -67,7 +67,10 @@
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
 }
-
+.mx-3{
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+}
 
     </style>
     

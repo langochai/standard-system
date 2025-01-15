@@ -48,9 +48,11 @@ namespace Standard.SVWSDocument
             DataTable dt = new DataTable();
             da.Fill(dt);
 
-            string checkConfirmQuery = $"select count(*) from SVWSDocument_confirmActivate where svws_doc_id = {doc_id} and user_id = '{Session["username"]}'";
+            string checkConfirmQuery = $"select top 1 [confirm_status] from SVWSDocument_confirmActivate where svws_doc_id = {doc_id} and user_id = '{Session["username"]}'";
             SqlCommand cmdCheck = new SqlCommand(checkConfirmQuery, con);
-            bool isConfirmed = Convert.ToInt32(cmdCheck.ExecuteScalar()) > 0;
+            object checkResult = cmdCheck.ExecuteScalar();
+            bool isConfirmed = checkResult != DBNull.Value && checkResult != null;
+            bool labelSignup = Convert.ToBoolean(checkResult);
 
             con.Close();
             if (dt.Rows.Count == 0)
@@ -74,19 +76,21 @@ namespace Standard.SVWSDocument
                 des_vi.InnerHtml = dt.Rows[0]["detail_vi"].ToString();
                 des_en.InnerHtml = dt.Rows[0]["detail_eng"].ToString();
                 bool isActivated = Convert.ToString(dt.Rows[0]["active_f"]) == "1";
-                //litConfirm.Text = language == "en" ? "Confirm" : "Xác nhận";
-                //litQuestionConfirm.Text = language == "en" ? "Do you understand this standard?" : "Xác nhận đã hiểu tiêu chuẩn này";
-                //litSignUp.Text = language == "en" ? "Sign up" : "Xác nhận ký";
-                //litQuestionSignUp.Text = language == "en" ? "Do you sign up to issue this standard?" : "Xác nhận đồng ý ban hành tiêu chuẩn này";
                 confirm_understand.Visible = isActivated;
-                confirm_activation.Visible = !isActivated;
+                confirm_activation.Visible = !isActivated && Convert.ToInt32(Session["permit"]) == 3;
                 btnSendMailSignUp.Visible = Convert.ToInt32(Session["permit"]) < 2 && !isActivated;
-                confirm_list.Visible = Convert.ToInt32(Session["permit"]) < 2;
+                confirm_list.Visible = Convert.ToInt32(Session["permit"]) < 3;
                 lblSignUpMessage.Text = language == "en" ? "Do you sign up to issue this standard?" : "Xác nhận đồng ý ban hành tiêu chuẩn này";
                 if (isConfirmed)
                 {
-                    lblSignUpMessage.Text = language == "en" ? "You have confirmed this standard" : "Bạn đã xác nhận tiêu chuẩn này";
-                    LinkButton2.Visible = false;
+                    if (labelSignup) { 
+                        lblSignUpMessage.Text = language == "en" ? "You have accepted this standard" : "Bạn đã đồng ý với tiêu chuẩn này";
+                    }
+                    else
+                    {
+                        lblSignUpMessage.Text = language == "en" ? "You have declined this standard" : "Bạn đã từ chối tiêu chuẩn này";
+                    }
+                    LinkButton2.Visible = LinkButton3.Visible = txtNote.Visible = false;
                 }
                 loadGV_file(doc_id);
                 load_listDep();
@@ -192,16 +196,37 @@ namespace Standard.SVWSDocument
             }
 
         }
-        protected void btn_confirm_issue_Click(object sender, EventArgs e)
+        protected void btn_accept_issue_Click(object sender, EventArgs e)
         {
             string docId = Request.QueryString["doc_id"];
             string userId = Session["username"].ToString();
+            string note = txtNote.Text;
             con.Open();
             using (SqlCommand cmd = new SqlCommand("SVWS_insert_confirm", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@doc_id", docId);
                 cmd.Parameters.AddWithValue("@user_id", userId);
+                cmd.Parameters.AddWithValue("@confirm_status", true);
+                cmd.Parameters.AddWithValue("@note", note);
+                cmd.ExecuteNonQuery();
+            }
+            con.Close();
+            Response.Redirect(Request.Url.AbsoluteUri);
+        }
+        protected void btn_decline_issue_Click(object sender, EventArgs e)
+        {
+            string docId = Request.QueryString["doc_id"];
+            string userId = Session["username"].ToString();
+            string note = txtNote.Text;
+            con.Open();
+            using (SqlCommand cmd = new SqlCommand("SVWS_insert_confirm", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@doc_id", docId);
+                cmd.Parameters.AddWithValue("@user_id", userId);
+                cmd.Parameters.AddWithValue("@confirm_status", false);
+                cmd.Parameters.AddWithValue("@note", note);
                 cmd.ExecuteNonQuery();
             }
             con.Close();

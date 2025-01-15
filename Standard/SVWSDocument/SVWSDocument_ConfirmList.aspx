@@ -103,9 +103,12 @@
                     <asp:BoundField DataField="cofirm_date" HeaderText="Ngày ký"  />
                     <asp:TemplateField HeaderText="Xác nhận ký" ItemStyle-Width="25%">
                         <ItemTemplate>
-                            <asp:CheckBox ID="CheckBox1" runat="server" Checked='<%# Convert.ToBoolean(Eval("cofirmation")) %>' onclick="return false;"/>
+                            <asp:Label ID="lblConfirmed" runat="server" 
+                                Text='<%# Eval("cofirmation") == DBNull.Value ? "" : 
+                                    Convert.ToBoolean(Eval("cofirmation"))? "☑ Đồng ý" : "☒ Từ chối" %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
+                    <asp:BoundField DataField="note" HeaderText="Ghi chú"  />
                 </Columns>
                 <EditRowStyle BackColor="#999999" />
                 <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />

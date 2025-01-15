@@ -209,6 +209,8 @@ namespace Standard.Administrator
             dummy.Columns.Add("dep_c");
             dummy.Columns.Add("email");
             dummy.Columns.Add("permit_nm");
+            dummy.Columns.Add("fullname");
+            dummy.Columns.Add("STT");
 
             //dummy.Columns.Add("first_serial");
             dummy.Rows.Add();

@@ -103,9 +103,9 @@ namespace Standard.SVWSDocument
                         worksheet.Cell(startRow, 5).Value = row[2].ToString();
                         worksheet.Cell(startRow, 8).Value = row[5].ToString();
                         worksheet.Cell(startRow, 11).Value = row[6].ToString();
-                        worksheet.Cell(startRow, 20).Value = row[4].ToString() == "1" ? "☑ Có" : ""; //"☒ Không";
-                        worksheet.Cell(startRow, 27).Value = row[3] == DBNull.Value? "": Convert.ToDateTime(row[3]).ToString("yyyy-MM-dd hh:mm:ss");
-                        worksheet.Cell(startRow, 27).DataType = XLDataType.DateTime;
+                        worksheet.Cell(startRow, 20).Value = row[4].ToString() == "" ? "" : Convert.ToBoolean(row[4]) ? "☑ Có" : "☒ Không";
+                        worksheet.Cell(startRow, 27).Value = row[7].ToString();
+                        //worksheet.Cell(startRow, 27).DataType = XLDataType.DateTime;
                         startRow += 1;
                     }
                     using (var newStream = new MemoryStream())
