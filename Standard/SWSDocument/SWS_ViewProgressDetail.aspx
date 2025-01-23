@@ -20,7 +20,7 @@
               showOn: 'button',
               buttonImageOnly: true,
               buttonImage: '../Images/calendar.png',
-              dateFormat: 'dd-M-yy' 
+              dateFormat: 'dd-M-yy'
           });
       });
 
@@ -159,7 +159,7 @@
         </asp:Repeater>
         <div class="menu_control">
             <span>
-                <asp:Button ID="btn_back" runat="server" Enabled="false" class="btn btn-warning" Text="Hủy xác nhận" OnClick="btn_back_Click" />
+                <asp:Button ID="btn_back" runat="server"  class="btn btn-warning" Text="Hủy xác nhận" OnClick="btn_back_Click" />
             </span>
             <span style="padding-left:5px">
                 <asp:Button ID="btn_deploy" runat="server" Enabled="false" CssClass="btn btn-primary" Text="Xác nhận triển khai" OnClick="btn_deploy_Click" OnClientClick="return confirm ('Bạn có chắc sẽ Xác nhận triển khai?');" />
@@ -180,9 +180,9 @@
             <asp:GridView ID="GV_DetailProgress" Width="60%" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False">
                 <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                 <Columns>
-                    <asp:BoundField DataField="activity" HeaderText="Activity" />
-                    <asp:BoundField DataField="user" HeaderText="User" />
-                    <asp:BoundField DataField="datetime" HeaderText="Date time" />
+                    <asp:BoundField DataField="sws_status_nm" HeaderText="Activity" />
+                    <asp:BoundField DataField="pms_i_usr" HeaderText="User" />
+                    <asp:BoundField DataField="pms_i_ymd" HeaderText="Date time" />
                 </Columns>
                 <EditRowStyle BackColor="#999999" />
                 <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />

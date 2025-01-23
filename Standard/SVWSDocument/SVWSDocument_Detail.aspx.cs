@@ -83,7 +83,8 @@ namespace Standard.SVWSDocument
                 lblSignUpMessage.Text = language == "en" ? "Do you sign up to issue this standard?" : "Xác nhận đồng ý ban hành tiêu chuẩn này";
                 if (isConfirmed)
                 {
-                    if (labelSignup) { 
+                    if (labelSignup)
+                    {
                         lblSignUpMessage.Text = language == "en" ? "You have accepted this standard" : "Bạn đã đồng ý với tiêu chuẩn này";
                     }
                     else
@@ -174,17 +175,34 @@ namespace Standard.SVWSDocument
         }
         void confirm_doc(string doc_id)
         {
-            con.Open();
-            SqlCommand cmd = new SqlCommand("SVWS_ConfirmDoc", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
-            cmd.Parameters.AddWithValue("@dep_c", Session["dep_c"]);
-            cmd.Parameters.AddWithValue("@confirm_per", Session["username"]);
-            cmd.Parameters.AddWithValue("@pms_u_class", lbl_class.Text.Trim());
-            cmd.Parameters.AddWithValue("@pms_u_usr", lbl_class.Text.Trim());
-            cmd.ExecuteNonQuery();
-            con.Close();
-
+            try
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SVWS_ConfirmDoc", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
+                cmd.Parameters.AddWithValue("@dep_c", Session["dep_c"]);
+                cmd.Parameters.AddWithValue("@confirm_per", Session["username"]);
+                cmd.Parameters.AddWithValue("@pms_u_class", lbl_class.Text.Trim());
+                cmd.Parameters.AddWithValue("@pms_u_usr", lbl_class.Text.Trim());
+                cmd.CommandTimeout = 180;
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+            catch (SqlException sqlEx) when (sqlEx.Number == -2)
+            {
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Lỗi server";
+                Response.Write("Hết thời gian kết nối: request tới database bị timeout");
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                Response.StatusDescription = "Lỗi server";
+                Response.Write("Đã có lỗi xảy ra: " + ex.Message);
+                Response.End();
+            }
         }
 
         protected void btn_confirm_Click(object sender, EventArgs e)
@@ -284,17 +302,38 @@ namespace Standard.SVWSDocument
                 {
                     string doc_id = Request.QueryString["doc_id"];
                     string dep_c = DataBinder.Eval(dataitem.DataItem, "dep_c").ToString();
+                    bool isCompleted = false, hasDeclined = false;
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("SVWS_get_confirm_list_status", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
-                    cmd.Parameters.AddWithValue("@dep_c", dep_c);
-                    bool isCompleted = Convert.ToInt32(cmd.ExecuteScalar()) == 0;
+                    using (SqlCommand cmd = new SqlCommand("SVWS_get_confirm_list_status", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
+                        cmd.Parameters.AddWithValue("@dep_c", dep_c);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    isCompleted = Convert.ToInt32(reader["countMissing"]) == 0;
+                                    hasDeclined = Convert.ToInt32(reader["countDeclined"]) > 0;
+                                }
+                            }
+                        }
+                    }
+
                     con.Close();
-                    if(!isCompleted)
+                    if (!isCompleted)
                     {
                         HtmlTableCell row = (HtmlTableCell)e.Item.FindControl("Main");
                         row.BgColor = "#F8CBAD";
+                    }
+                    if (hasDeclined)
+                    {
+                        HtmlTableCell row = (HtmlTableCell)e.Item.FindControl("Main");
+                        row.BgColor = "red";
+                        row.Style.Add("color", "white");
                     }
                 }
 

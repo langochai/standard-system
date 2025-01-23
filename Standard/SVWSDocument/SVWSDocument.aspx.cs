@@ -115,13 +115,33 @@ namespace Standard.SVWSDocument
                 {
 
                     string doc_id = e.CommandArgument.ToString().Trim();
+                    bool isCompleted = false, hasDeclined = false;
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("SVWS_get_confirm_list_status", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
-                    bool allowActivation = Convert.ToInt32(cmd.ExecuteScalar()) == 0;
+                    using (SqlCommand cmd = new SqlCommand("SVWS_get_confirm_list_status", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@svws_doc_id", doc_id);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    isCompleted = Convert.ToInt32(reader["countMissing"]) == 0;
+                                    hasDeclined = Convert.ToInt32(reader["countDeclined"]) > 0;
+                                }
+                            }
+                        }
+                    }
+
                     con.Close();
-                    if (!allowActivation)
+                    if (hasDeclined)
+                    {
+                        alert.InnerHtml = "Không thể active! Đã có bộ phận từ chối ban hành tiêu chuẩn";
+                        alert.Attributes.Add("class", "text-danger");
+                    }
+                    else if (!isCompleted)
                     {
                         alert.InnerHtml = "Không thể active! Tiêu chuẩn chưa có đủ chữ ký xác nhận triển khai";
                         alert.Attributes.Add("class", "text-danger");
@@ -543,15 +563,22 @@ namespace Standard.SVWSDocument
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HiddenField countMissing = (HiddenField)e.Row.FindControl("HiddenFCountMissing");
+                HiddenField hasDeclinedControl = (HiddenField)e.Row.FindControl("HiddenFHasDeclined");
                 bool isCompleted = Convert.ToInt32(countMissing.Value) < 1;
                 bool isActivated = e.Row.Cells[7].Text == "1";
+                bool hasDeclined = hasDeclinedControl.Value == "1";
                 if (!isActivated && !isCompleted)
                 {
                     e.Row.BackColor = System.Drawing.Color.FromArgb(252, 213, 180);
                 }
-                else if (!isActivated && isCompleted)
+                else if (isCompleted)
                 {
                     e.Row.BackColor = System.Drawing.Color.FromArgb(255, 250, 205);
+                }
+                if (hasDeclined)
+                {
+                    e.Row.BackColor = System.Drawing.Color.FromArgb(255, 69, 0);
+                    e.Row.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                 }
             }
         }

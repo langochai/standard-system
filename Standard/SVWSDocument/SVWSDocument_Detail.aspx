@@ -192,12 +192,12 @@
                         <asp:Label ID="lblSignUpMessage" runat="server"></asp:Label>
                         <asp:LinkButton ID="LinkButton2" runat="server" 
                             OnClick="btn_accept_issue_Click" 
-                            OnClientClick="return hasReadFiles()" CssClass="mx-3">
+                            OnClientClick="return hasReadFiles(true)" CssClass="mx-3">
                             <%Response.Write(Standard.Language.value == "en" ? "Accept" : "Đồng ý");%>
                         </asp:LinkButton>
                         <asp:LinkButton ID="LinkButton3" runat="server" 
                             OnClick="btn_decline_issue_Click" 
-                            OnClientClick="return hasReadFiles()" CssClass="mx-3">
+                            OnClientClick="return hasReadFiles(false)" CssClass="mx-3">
                             <%Response.Write(Standard.Language.value == "en" ? "Decline" : "Từ chối");%>
                         </asp:LinkButton>
                     </td>
@@ -207,7 +207,7 @@
                         <%Response.Write(Standard.Language.value == "en" ? "Note" : "Ghi chú");%>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="400px"></asp:TextBox>
+                        <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="400px" ClientIDMode="Static"></asp:TextBox>
                     </td>
                 </tr>
                 </asp:PlaceHolder>
@@ -221,11 +221,13 @@
                    %>    
         </div>
        <script>
-           function hasReadFiles() {
+           function hasReadFiles(isConfirmed) {
                const docID = (new URLSearchParams(window.location.search)).get('doc_id')
                const hasClickedOnFile = localStorage.getItem('confirmRead'+docID);
+               const noNote = !isConfirmed && !document.getElementById('txtNote').value
                if (hasClickedOnFile != 1) alert('Vui lòng đọc file tiêu chuẩn trước khi xác nhận.')
-               return hasClickedOnFile == 1
+               if (noNote) alert('Vui lòng nhập ghi chú trước khi từ chối.')
+               return hasClickedOnFile == 1 && !noNote
            }
            function sendMails() {
                const docID = (new URLSearchParams(window.location.search)).get('doc_id')

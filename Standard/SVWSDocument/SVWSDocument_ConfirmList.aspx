@@ -104,6 +104,8 @@
                     <asp:TemplateField HeaderText="Xác nhận ký" ItemStyle-Width="25%">
                         <ItemTemplate>
                             <asp:Label ID="lblConfirmed" runat="server" 
+                                ForeColor='<%# Eval("cofirmation") == DBNull.Value ? System.Drawing.Color.Black : 
+                                    Convert.ToBoolean(Eval("cofirmation"))? System.Drawing.Color.Green : System.Drawing.Color.Red %>'
                                 Text='<%# Eval("cofirmation") == DBNull.Value ? "" : 
                                     Convert.ToBoolean(Eval("cofirmation"))? "☑ Đồng ý" : "☒ Từ chối" %>'></asp:Label>
                         </ItemTemplate>

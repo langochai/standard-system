@@ -67,14 +67,26 @@ namespace Standard.SVWSDocument
             {
                 // Access the HiddenField value
                 HiddenField hiddenActiveF = (HiddenField)e.Row.FindControl("HiddenActiveF");
+                HiddenField hasDeclinedControl = (HiddenField)e.Row.FindControl("HiddenHasDeclinedF");
                 string active_f = hiddenActiveF.Value;
-
+                bool hasDeclined = hasDeclinedControl.Value == "1";
                 if (active_f == "0")
                 {
                     e.Row.BackColor = System.Drawing.Color.FromArgb(252, 213, 180);
                 }
+                if (hasDeclined)
+                {
+                    e.Row.BackColor = System.Drawing.Color.FromArgb(255, 69, 0);
+                    e.Row.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                }
             }
         }
-
+        protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridView1.PageIndex = e.NewPageIndex;
+            GridView1.DataSource = dt_GV("", "", "", "");
+            GridView1.DataBind();
+            alert.InnerHtml = "";
+        }
     }
 }

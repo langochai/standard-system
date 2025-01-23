@@ -250,6 +250,11 @@
                             <asp:HiddenField ID="HiddenFCountMissing" runat="server" Value='<%# Eval("count_missing") %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
+                    <asp:TemplateField HeaderText="HasDeclined" Visible="false">
+                        <ItemTemplate>
+                            <asp:HiddenField ID="HiddenFHasDeclined" runat="server" Value='<%# Eval("has_declined") %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
                 <EditRowStyle BackColor="#999999" />
                 <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />

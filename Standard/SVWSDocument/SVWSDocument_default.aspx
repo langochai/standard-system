@@ -142,7 +142,7 @@
             
             
             <asp:GridView ID="GridView1" Width="100%" runat="server" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333"
-                GridLines="None" DataKeyNames="svws_doc_id" OnRowCommand="GridView1_RowCommand" OnRowDataBound="GridView1_RowDataBound">
+                GridLines="None" DataKeyNames="svws_doc_id" OnRowCommand="GridView1_RowCommand" OnRowDataBound="GridView1_RowDataBound" AllowPaging="True" PageSize="15" OnPageIndexChanging="GridView1_PageIndexChanging">
                 <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                 <Columns>
                    <asp:BoundField DataField="stt" HeaderText="STT" ItemStyle-Width="5px" />
@@ -179,12 +179,16 @@
                             <asp:HiddenField ID="HiddenActiveF" runat="server" Value='<%# Eval("active_f") %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
-                    
+                    <asp:TemplateField HeaderText="HasDeclined" Visible="false">
+                        <ItemTemplate>
+                            <asp:HiddenField ID="HiddenHasDeclinedF" runat="server" Value='<%# Eval("has_declined") %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
                 <EditRowStyle BackColor="#999999" />
                 <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
                 <HeaderStyle BackColor="#c9c9c9" Font-Bold="True" ForeColor="White" />
-                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <PagerStyle  ForeColor="black" HorizontalAlign="right" />
                 <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
                 <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
                 <SortedAscendingCellStyle BackColor="#E9E7E2" />
